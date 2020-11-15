@@ -506,6 +506,22 @@ class TestMetadata:
 
 class TestOptions:
 
+    def test_install_requires_containing_dep_links(self, tmpdir):
+        fake_env(
+            tmpdir,
+            '[options]\n'
+            'install_requires = docutils>=0.3; pack ==1.1, ==1.3; '
+            'hey; dependency@http://some.com/here/1\n'
+        )
+        with get_dist(tmpdir) as dist:
+            print(dist.install_requires)
+            assert dist.install_requires == ([
+                'docutils>=0.3',
+                'pack==1.1,==1.3',
+                'hey',
+                'dependency@ http://some.com/here/1',
+            ])
+
     def test_basic(self, tmpdir):
 
         fake_env(

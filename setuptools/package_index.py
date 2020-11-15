@@ -640,6 +640,11 @@ class PackageIndex(Environment):
                     if os.path.exists(dist.download_location):
                         return dist
 
+        # find packages from outside of Pypi referred
+        # in install_requires dependencies
+        if requirement.url and requirement.key not in self:
+            self.to_scan.append(requirement.url)
+
         if force_scan:
             self.prescan()
             self.find_packages(requirement)
